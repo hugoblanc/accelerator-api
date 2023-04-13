@@ -20,7 +20,7 @@ export class GptService {
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       messages,
-      max_tokens: 400,
+      max_tokens: 1000,
       temperature: 0,
     });
     console.log('call successful');
