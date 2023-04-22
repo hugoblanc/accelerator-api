@@ -15,6 +15,7 @@ model Prompt {
   text            String
   name            String
   promptVariables PromptVariable[]
+  categories      Category[]
 
   @@map("prompt")
 }
@@ -26,4 +27,12 @@ model PromptVariable {
   value    String
 
   @@map("prompt_variable")
+}
+
+model Category {
+  id      String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name    String
+  prompts Prompt[]
+
+  @@map("category")
 }

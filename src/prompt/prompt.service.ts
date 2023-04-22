@@ -22,6 +22,9 @@ export class PromptService {
             data: variables.map((variable) => ({ value: variable })),
           },
         },
+        categories: {
+          connect: createPromptDto.categoryIds.map((id) => ({ id })),
+        },
       },
     });
   }
@@ -41,6 +44,7 @@ export class PromptService {
     return this.prisma.prompt.findMany({
       include: {
         promptVariables: true,
+        categories: true,
       },
     });
   }

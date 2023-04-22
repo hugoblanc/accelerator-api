@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreatePromptDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CreatePromptDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly categoryIds: string[];
 }
