@@ -64,7 +64,7 @@ export class PromptService {
 
     console.log(text);
 
-    const result = await this.gpt.callOpenAI(text);
+    const result = await this.gpt.callWithPrompt(text);
     return { result };
   }
 

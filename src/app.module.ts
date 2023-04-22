@@ -1,3 +1,4 @@
+import { ChatModule } from './core/chat/chat.module';
 import { CategoryModule } from './core/category/category.module';
 import { GptService } from './core/openai/gpt.service';
 import { OpenaiModule } from './core/openai/openai.module';
@@ -9,7 +10,13 @@ import { AppService } from './app.service';
 import { APP_PIPE } from '@nestjs/core';
 
 @Module({
-  imports: [CategoryModule, OpenaiModule, PrismaModule, PromptModule],
+  imports: [
+    ChatModule,
+    CategoryModule,
+    OpenaiModule,
+    PrismaModule,
+    PromptModule,
+  ],
   controllers: [AppController],
   providers: [
     GptService,
