@@ -24,6 +24,9 @@ export class PromptService {
         },
         categories: {
           connect: createPromptDto.categoryIds.map((id) => ({ id })),
+          create: createPromptDto.categoryNamesToCreate?.map((name) => ({
+            name,
+          })),
         },
       },
     });

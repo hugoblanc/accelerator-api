@@ -6,8 +6,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CategoryService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAllCategories() {
-    return this.prisma.category.findMany();
+  getCategories(name?: string) {
+    return this.prisma.category.findMany({
+      where: {
+        name: {
+          mode: 'insensitive',
+          contains: name,
+        },
+      },
+    });
   }
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
