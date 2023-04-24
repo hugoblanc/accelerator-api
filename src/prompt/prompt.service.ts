@@ -51,7 +51,7 @@ export class PromptService {
       },
     });
   }
-  async usePrompt(promptId: string, usePrompDto: UsePromptDto) {
+  async usePrompt(usePrompDto: UsePromptDto) {
     let text = usePrompDto.text;
     console.log(text);
 

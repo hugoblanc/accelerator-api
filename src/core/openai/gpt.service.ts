@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { Configuration, OpenAIApi } from 'openai';
-import { OpenAiMessages, SystemMessage } from './gpt/openai.messages';
+import {
+  OpenAiMessages,
+  SystemMessage,
+  UserMessage,
+} from './gpt/openai.messages';
 import { ShortTermChatDto } from '../../prompt/dto/short-term-chat.dto';
 
 @Injectable()
@@ -17,7 +21,10 @@ export class GptService {
   }
 
   async callWithPrompt(prompt: string) {
-    const messages = [new SystemMessage(prompt)];
+    const messages = [
+      new SystemMessage('You are a helpful assistant'),
+      new UserMessage(prompt),
+    ];
     return this.createChatCompletion(messages);
   }
 
