@@ -16,14 +16,13 @@ export class PromptController {
   getAllPrompts() {
     return this.promptService.getAllPrompts();
   }
+  @Post('/use')
+  usePrompt(@Body() usePrompDto: UsePromptDto) {
+    return this.promptService.usePrompt(usePrompDto);
+  }
 
   @Get('/:promptId')
   getPromptById(@Param('promptId') promptId: string) {
     return this.promptService.getPromptById(promptId);
-  }
-
-  @Post('/use/:promptId')
-  usePrompt(@Body() usePrompDto: UsePromptDto) {
-    return this.promptService.usePrompt(usePrompDto);
   }
 }
