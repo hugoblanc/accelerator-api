@@ -23,10 +23,7 @@ export class PromptController {
   }
 
   @Post('/use/:promptId')
-  usePrompt(
-    @Param('promptId') promptId: string,
-    @Body() usePrompDto: UsePromptDto,
-  ) {
-    return this.promptService.usePrompt(promptId, usePrompDto);
+  usePrompt(@Body() usePrompDto: UsePromptDto) {
+    return this.promptService.usePrompt(usePrompDto);
   }
 }
