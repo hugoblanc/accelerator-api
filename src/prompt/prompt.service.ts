@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../core/prisma/prisma.service';
+import { PromptTemplate } from './domain/prompt-template';
 import { CreatePromptDto } from './dto/create-prompt.dto';
-import { UsePromptDto } from './dto/use-prompt.dto';
-import { GptService } from '../core/openai/gpt.service';
+import { UsePromptDto } from '../core/chat/dto/use-prompt.dto';
 
 @Injectable()
 export class PromptService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly gpt: GptService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
   async createPrompt(createPromptDto: CreatePromptDto) {
-    const variables = this.extractVariablesFromPrompt(createPromptDto.text);
+    const template = new PromptTemplate(createPromptDto.text);
+    const variables = template.variables;
 
     return this.prisma.prompt.create({
       data: {
@@ -19,7 +17,11 @@ export class PromptService {
         text: createPromptDto.text,
         promptVariables: {
           createMany: {
-            data: variables.map((variable) => ({ value: variable })),
+            data: variables.map((variable) => ({
+              key: variable.key,
+              value: variable.key,
+              type: variable.type,
+            })),
           },
         },
         categories: {
@@ -50,34 +52,5 @@ export class PromptService {
         categories: true,
       },
     });
-  }
-  async usePrompt(usePrompDto: UsePromptDto) {
-    let text = usePrompDto.text;
-    console.log(text);
-
-    const variables = usePrompDto.variables;
-    variables.forEach((variable) => {
-      console.log('look for ' + `[${variable.name}]`);
-
-      text = text.replace(`[${variable.name}]`, variable.value);
-    });
-
-    console.log(text);
-
-    const result = await this.gpt.callWithPrompt(text);
-    return { result };
-  }
-
-  private extractVariablesFromPrompt(prompt: string) {
-    const regex = /\[(.*?)\]/g;
-
-    const variables = [];
-    let match: RegExpExecArray;
-
-    while ((match = regex.exec(prompt)) !== null) {
-      variables.push(match[1]);
-    }
-
-    return variables;
   }
 }
