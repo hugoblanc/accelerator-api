@@ -20,9 +20,12 @@ export class ChatService {
   async usePrompt(promptId: string, usePrompDto: UsePromptDto) {
     const promptTemplate = await this.promptRepository.findPromptById(promptId);
 
-    const initializer = new ChatInitializer(promptTemplate.text);
-    const prompt = initializer.renderPrompt(usePrompDto.variables);
-    const result = await this.gpt.callWithPrompt(prompt);
+    const initializer = new ChatInitializer(
+      promptTemplate.text,
+      usePrompDto.variables,
+    );
+    const prompt = initializer.renderPrompt();
+    const result = await this.gpt.callWithPrompts(prompt);
     return { result };
   }
 }

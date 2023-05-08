@@ -15,11 +15,6 @@ export class ChatController {
     return this.chatService.usePrompt(promptId, usePrompDto);
   }
 
-  @Post('short-term-memory')
-  shortTermMemory(@Body() shortTermChatDto: ShortTermChatDto) {
-    return this.chatService.continueChatting(shortTermChatDto);
-  }
-
   @Post('continue-chatting')
   continueChatting(@Body() shortTermChatDto: ShortTermChatDto) {
     return this.chatService.continueChatting(shortTermChatDto);

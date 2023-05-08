@@ -10,12 +10,23 @@ import {
 
 @Injectable()
 export class GptService {
-  async callWithPrompt(prompt: string) {
-    const messages = [
+  async callWithPrompts(prompts: string[]) {
+    const messages = prompts.map((prompt) => new UserMessage(prompt));
+
+    prompts.forEach((prompt, i) => {
+      console.log('prompt N°' + (i + 1) + ' size ' + prompt.length, prompt);
+    });
+
+    const conversations = messages.map((message) => [
       new SystemMessage('You are a helpful assistant'),
-      new UserMessage(prompt),
-    ];
-    return this.createGPT3ChatCompletion(messages);
+      message,
+    ]);
+
+    const completionsPromises = conversations.map((conversation) =>
+      this.createGPT3ChatCompletion(conversation),
+    );
+
+    return (await Promise.all(completionsPromises)).join('\n');
   }
 
   async callShortTermMemory(shortTermChat: ShortTermChatDto) {
