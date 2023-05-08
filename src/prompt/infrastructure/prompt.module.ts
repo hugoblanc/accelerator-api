@@ -1,10 +1,10 @@
-import { PromptService } from './prompt.service';
+import { PromptService } from '../application/prompt.service';
+import { PromptAccessorModule } from './accessors/prompt-accessor.module';
 import { PromptController } from './prompt.controller';
 import { Module } from '@nestjs/common';
-import { ChatModule } from '../core/chat/chat.module';
 
 @Module({
-  imports: [ChatModule],
+  imports: [PromptAccessorModule],
   controllers: [PromptController],
   providers: [PromptService],
 })

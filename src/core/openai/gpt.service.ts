@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { ShortTermChatDto } from '../../prompt/dto/short-term-chat.dto';
+import { ShortTermChatDto } from '../../prompt/infrastructure/dto/short-term-chat.dto';
 import { Gpt35Engine } from './gpt/gpt-3.5-engine';
 import {
   OpenAiMessages,

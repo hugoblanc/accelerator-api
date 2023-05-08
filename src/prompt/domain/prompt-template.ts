@@ -39,17 +39,12 @@ export class PromptTemplate {
   }
 }
 
-// export enum VariableType {
-//   text = 'text',
-//   longText = 'longText',
-// }
-
 interface VariableProps {
   type: VariableType;
   key: string;
 }
 
-const variableDictionary = new Map<VariableType, RegExp>([
+export const variableDictionary = new Map<VariableType, RegExp>([
   [VariableType.text, /\btext\(([^)]*)\)/gi],
   [VariableType.longText, /\blongText\(([^)]*)\)/gi],
 ]);

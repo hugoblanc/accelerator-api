@@ -27,7 +27,7 @@
     "unpay"
   ],
   "jestrunner.codeLensSelector": "**/*.{test,spec}.{js,jsx,ts,tsx}",
-  "jestrunner.jestCommand": "npm run test:watch -- ",
+  "jestrunner.jestCommand": "npm run test -- ",
   "yaml.customTags": ["!reference sequence"],
   "typescript.preferences.importModuleSpecifier": "relative"
 }

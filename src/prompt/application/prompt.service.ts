@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../core/prisma/prisma.service';
-import { PromptTemplate } from './domain/prompt-template';
-import { CreatePromptDto } from './dto/create-prompt.dto';
-import { UsePromptDto } from '../core/chat/dto/use-prompt.dto';
+import { PrismaService } from '../../core/prisma/prisma.service';
+import { PromptTemplate } from '../domain/prompt-template';
+import { CreatePromptDto } from '../infrastructure/dto/create-prompt.dto';
+import { UsePromptDto } from '../../chat/dto/use-prompt.dto';
 
 @Injectable()
 export class PromptService {

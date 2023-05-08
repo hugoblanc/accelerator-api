@@ -1,23 +1,15 @@
-import { ChatModule } from './core/chat/chat.module';
-import { CategoryModule } from './core/category/category.module';
-import { GptService } from './core/openai/gpt.service';
-import { OpenaiModule } from './core/openai/openai.module';
-import { PrismaModule } from './core/prisma/prisma.module';
-import { PromptModule } from './prompt/prompt.module';
+import { PromptAccessorModule } from './prompt/infrastructure/accessors/prompt-accessor.module';
 import { Module, ValidationPipe } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { APP_PIPE } from '@nestjs/core';
+import { AppService } from './app.service';
+import { ChatModule } from './chat/infrastructure/chat.module';
+import { CoreModule } from './core/core.module';
+import { GptService } from './core/openai/gpt.service';
+import { CategoryModule } from './prompt/category/category.module';
+import { PromptModule } from './prompt/infrastructure/prompt.module';
 
 @Module({
-  imports: [
-    ChatModule,
-    CategoryModule,
-    OpenaiModule,
-    PrismaModule,
-    PromptModule,
-  ],
-  controllers: [AppController],
+  imports: [CoreModule, ChatModule, CategoryModule, PromptModule],
   providers: [
     GptService,
     AppService,
