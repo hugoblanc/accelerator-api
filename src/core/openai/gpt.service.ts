@@ -1,46 +1,31 @@
 import { Injectable } from '@nestjs/common';
 
-import { Configuration, OpenAIApi } from 'openai';
+import { ShortTermChatDto } from '../../prompt/dto/short-term-chat.dto';
+import { Gpt35Engine } from './gpt/gpt-3.5-engine';
 import {
   OpenAiMessages,
   SystemMessage,
   UserMessage,
 } from './gpt/openai.messages';
-import { ShortTermChatDto } from '../../prompt/dto/short-term-chat.dto';
 
 @Injectable()
 export class GptService {
-  private openai: OpenAIApi;
-
-  constructor() {
-    const configuration = new Configuration({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    this.openai = new OpenAIApi(configuration);
-  }
-
   async callWithPrompt(prompt: string) {
     const messages = [
       new SystemMessage('You are a helpful assistant'),
       new UserMessage(prompt),
     ];
-    return this.createChatCompletion(messages);
+    return this.createGPT3ChatCompletion(messages);
   }
 
   async callShortTermMemory(shortTermChat: ShortTermChatDto) {
-    return this.createChatCompletion(shortTermChat.messages);
+    return this.createGPT3ChatCompletion(shortTermChat.messages);
   }
 
-  private async createChatCompletion(
+  private async createGPT3ChatCompletion(
     messages: OpenAiMessages,
   ): Promise<string> {
-    const response = await this.openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages,
-      max_tokens: 1000,
-      temperature: 0,
-    });
-    return response.data.choices[0].message.content;
+    const engine = new Gpt35Engine(messages);
+    return engine.createChatCompletion();
   }
 }
