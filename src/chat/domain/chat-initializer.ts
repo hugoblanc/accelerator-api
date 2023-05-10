@@ -8,8 +8,8 @@ interface InjectableVariable {
 }
 
 export class ChatInitializer {
-  private contextMaxSize = 4000 * 4;
-  private outputMinSize = 500 * 4;
+  private contextMaxSize = 4000 * 3;
+  private outputMinSize = 500 * 3;
 
   get shouldBatchPrompt(): boolean {
     const variableLength = this.variables.reduce(
