@@ -6,7 +6,7 @@ export abstract class GptEngine {
   protected openai: OpenAIApi;
 
   abstract model: string;
-  abstract contextMaxCharSize: number;
+  abstract contextMaxToken: number;
 
   constructor(protected messages: OpenAiMessages) {
     const configuration = new Configuration({
@@ -24,7 +24,7 @@ export abstract class GptEngine {
     const response = await this.openai.createChatCompletion({
       model: this.model,
       messages: this.messages,
-      max_tokens: this.contextMaxCharSize - this.contentLength,
+      max_tokens: this.contextMaxToken - Math.round(this.contentLength / 4),
       temperature: 0,
     });
     return response.data.choices[0].message.content;
