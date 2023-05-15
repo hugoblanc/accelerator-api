@@ -20,4 +20,9 @@ export class PromptController {
   getPromptById(@Param('promptId') promptId: string) {
     return this.promptService.getPromptById(promptId);
   }
+
+  @Post()
+  getByIds(@Body() promptIds: string[]) {
+    return this.promptService.getPromptByIds(promptIds);
+  }
 }

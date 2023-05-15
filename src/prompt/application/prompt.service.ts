@@ -34,6 +34,17 @@ export class PromptService {
     });
   }
 
+  getPromptByIds(promptIds: string[]) {
+    return this.prisma.prompt.findMany({
+      where: {
+        id: { in: promptIds },
+      },
+      include: {
+        promptVariables: true,
+      },
+    });
+  }
+
   getPromptById(promptId: string) {
     return this.prisma.prompt.findUnique({
       where: {
