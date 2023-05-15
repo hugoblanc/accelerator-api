@@ -7,9 +7,16 @@ import { CoreModule } from './core/core.module';
 import { GptService } from './core/openai/gpt.service';
 import { CategoryModule } from './prompt/category/category.module';
 import { PromptModule } from './prompt/infrastructure/prompt.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [CoreModule, ChatModule, CategoryModule, PromptModule],
+  imports: [
+    ConfigModule.forRoot(),
+    CoreModule,
+    ChatModule,
+    CategoryModule,
+    PromptModule,
+  ],
   providers: [
     GptService,
     AppService,
