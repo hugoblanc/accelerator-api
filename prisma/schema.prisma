@@ -14,6 +14,7 @@ model Prompt {
   id              String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   text            String
   name            String
+  description     String?
   promptVariables PromptVariable[]
   categories      Category[]
 

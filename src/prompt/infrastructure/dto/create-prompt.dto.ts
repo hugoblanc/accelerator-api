@@ -9,6 +9,9 @@ export class CreatePromptDto {
   @IsNotEmpty()
   readonly name: string;
 
+  @IsString()
+  readonly description?: string;
+
   @IsArray()
   @IsString({ each: true })
   readonly categoryIds: string[];
