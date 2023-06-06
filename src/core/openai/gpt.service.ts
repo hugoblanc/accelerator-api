@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
+import { GPTModel } from '@prisma/client';
 import { ShortTermChatDto } from '../../prompt/infrastructure/dto/short-term-chat.dto';
 import { Gpt35Engine } from './gpt/gpt-3.5-engine';
+import { GptEngine } from './gpt/gpt-engine';
+import { Gpt4Engine } from './gpt/gtp-4-engine';
 import {
   OpenAiMessages,
   SystemMessage,
@@ -10,7 +13,7 @@ import {
 
 @Injectable()
 export class GptService {
-  async callWithPrompts(prompts: string[]) {
+  async callWithPrompts(prompts: string[], model: GPTModel) {
     const messages = prompts.map((prompt) => new UserMessage(prompt));
 
     prompts.forEach((prompt, i) => {
@@ -22,9 +25,11 @@ export class GptService {
       message,
     ]);
 
-    const completionsPromises = conversations.map((conversation) =>
-      this.createGPT3ChatCompletion(conversation),
-    );
+    const Engine = this.createEngineFromModel(model);
+    const completionsPromises = conversations.map((conversation) => {
+      const engine = new Engine(conversation);
+      return engine.createChatCompletion();
+    });
 
     return (await Promise.all(completionsPromises)).join('\n');
   }
@@ -38,5 +43,15 @@ export class GptService {
   ): Promise<string> {
     const engine = new Gpt35Engine(messages);
     return engine.createChatCompletion();
+  }
+
+  private createEngineFromModel(
+    model: GPTModel,
+  ): new (messages: OpenAiMessages) => GptEngine {
+    if (model === GPTModel.GPT4) {
+      return Gpt4Engine;
+    } else {
+      return Gpt35Engine;
+    }
   }
 }

@@ -23,9 +23,10 @@ export class ChatService {
     const initializer = new ChatInitializer(
       promptTemplate.text,
       usePrompDto.variables,
+      promptTemplate.model,
     );
     const prompt = initializer.renderPrompt();
-    const result = await this.gpt.callWithPrompts(prompt);
+    const result = await this.gpt.callWithPrompts(prompt, promptTemplate.model);
     return { result };
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import { PromptTemplate } from '../domain/prompt-template';
 import { CreatePromptDto } from '../infrastructure/dto/create-prompt.dto';
+import { gptModelMap } from '../../core/openai/gpt/gtp-model.enum';
 
 @Injectable()
 export class PromptService {
@@ -9,12 +10,14 @@ export class PromptService {
   async createPrompt(createPromptDto: CreatePromptDto) {
     const template = new PromptTemplate(createPromptDto.text);
     const variables = template.variables;
+    const model = gptModelMap.get(createPromptDto.model);
 
     return this.prisma.prompt.create({
       data: {
         name: createPromptDto.name,
         text: createPromptDto.text,
         description: createPromptDto.description,
+        model,
         promptVariables: {
           createMany: {
             data: variables.map((variable) => ({
