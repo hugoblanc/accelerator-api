@@ -34,14 +34,9 @@ export class GptService {
     return (await Promise.all(completionsPromises)).join('\n');
   }
 
-  async callShortTermMemory(shortTermChat: ShortTermChatDto) {
-    return this.createGPT3ChatCompletion(shortTermChat.messages);
-  }
-
-  private async createGPT3ChatCompletion(
-    messages: OpenAiMessages,
-  ): Promise<string> {
-    const engine = new Gpt35Engine(messages);
+  async callShortTermMemory(shortTermChat: ShortTermChatDto, model: GPTModel) {
+    const Engine = this.createEngineFromModel(model);
+    const engine = new Engine(shortTermChat.messages);
     return engine.createChatCompletion();
   }
 
