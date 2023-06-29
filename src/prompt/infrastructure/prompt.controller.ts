@@ -21,7 +21,7 @@ export class PromptController {
     return this.promptService.getPromptById(promptId);
   }
 
-  @Post()
+  @Post('/ids')
   getByIds(@Body() promptIds: string[]) {
     return this.promptService.getPromptByIds(promptIds);
   }

@@ -12,8 +12,12 @@ export class ChatService {
     private readonly promptRepository: PromptRepository,
   ) {}
 
-  async continueChatting(shortTermChat: ShortTermChatDto) {
-    const result = await this.gpt.callShortTermMemory(shortTermChat);
+  async continueChatting(shortTermChat: ShortTermChatDto, promptId: string) {
+    const promptTemplate = await this.promptRepository.findPromptById(promptId);
+    const result = await this.gpt.callShortTermMemory(
+      shortTermChat,
+      promptTemplate.model,
+    );
     return { result };
   }
 
@@ -23,9 +27,10 @@ export class ChatService {
     const initializer = new ChatInitializer(
       promptTemplate.text,
       usePrompDto.variables,
+      promptTemplate.model,
     );
     const prompt = initializer.renderPrompt();
-    const result = await this.gpt.callWithPrompts(prompt);
+    const result = await this.gpt.callWithPrompts(prompt, promptTemplate.model);
     return { result };
   }
 }

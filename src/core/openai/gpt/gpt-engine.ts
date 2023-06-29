@@ -29,6 +29,13 @@ export abstract class GptEngine {
     console.log(max_tokens);
 
     try {
+      console.log({
+        model: this.model,
+        messages: this.messages,
+        max_tokens,
+        temperature: 0,
+      });
+
       const response = await this.openai.createChatCompletion({
         model: this.model,
         messages: this.messages,
@@ -37,6 +44,8 @@ export abstract class GptEngine {
       });
       return response.data.choices[0].message.content;
     } catch (error) {
+      console.log(JSON.stringify(error));
+
       this.logger.error(error);
       this.logger.error(error.message);
       throw error;

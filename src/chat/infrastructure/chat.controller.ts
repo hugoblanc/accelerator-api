@@ -15,8 +15,11 @@ export class ChatController {
     return this.chatService.usePrompt(promptId, usePrompDto);
   }
 
-  @Post('continue-chatting')
-  continueChatting(@Body() shortTermChatDto: ShortTermChatDto) {
-    return this.chatService.continueChatting(shortTermChatDto);
+  @Post('continue-chatting/:promptId')
+  continueChatting(
+    @Body() shortTermChatDto: ShortTermChatDto,
+    @Param('promptId', ParseUUIDPipe) promptId: string,
+  ) {
+    return this.chatService.continueChatting(shortTermChatDto, promptId);
   }
 }

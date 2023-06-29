@@ -1,5 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
-import { VariableType } from '@prisma/client';
+import { GPTModel, VariableType } from '@prisma/client';
+import {
+  GPT35TurboMaxContextToken,
+  GPT4MaxContextToken,
+} from '../../core/openai/gpt/gpt.constants';
 
 interface InjectableVariable {
   type: VariableType;
@@ -8,7 +12,7 @@ interface InjectableVariable {
 }
 
 export class ChatInitializer {
-  private contextMaxSize = 4000 * 3;
+  private contextMaxToken: number;
   private outputMinSize = 500 * 3;
 
   get shouldBatchPrompt(): boolean {
@@ -19,7 +23,7 @@ export class ChatInitializer {
     const templateLength = this.template.length;
 
     return (
-      variableLength + templateLength > this.contextMaxSize - this.outputMinSize
+      variableLength + templateLength > this.maxCharLength - this.outputMinSize
     );
   }
 
@@ -31,10 +35,21 @@ export class ChatInitializer {
     return this.variables.filter((variable) => variable.type === 'longText');
   }
 
+  get maxCharLength(): number {
+    return this.contextMaxToken * 3;
+  }
+
   constructor(
     readonly template: string,
     readonly variables: InjectableVariable[],
-  ) {}
+    readonly model: GPTModel,
+  ) {
+    if (model === GPTModel.GPT4) {
+      this.contextMaxToken = GPT4MaxContextToken;
+    } else {
+      this.contextMaxToken = GPT35TurboMaxContextToken;
+    }
+  }
 
   renderPrompt(): string[] {
     let result = this.template;
@@ -60,7 +75,7 @@ export class ChatInitializer {
     longTextVariable: InjectableVariable,
   ): string[] {
     const maxSizeBatch =
-      this.contextMaxSize - this.outputMinSize - template.length;
+      this.contextMaxToken - this.outputMinSize - template.length;
     const chunks = chunkLargeString(longTextVariable.value, maxSizeBatch);
 
     return chunks.map((chunk) => {
