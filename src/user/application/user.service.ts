@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../core/prisma/prisma.service';
-import { User } from '../domain/user';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {PrismaService} from '../../core/prisma/prisma.service';
+import {User} from '../domain/user';
 import * as bcrypt from 'bcrypt';
+import {AuthService} from "./auth.service";
 
 @Injectable()
 export class UserService {
   saltRounds = 10;
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private authService: AuthService,
+  ) {}
 
   async createUser(email: string, password: string): Promise<User> {
     const user = await this.prisma.user.create({
@@ -18,6 +22,23 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async loginUser(email: string, password: string): Promise<string> {
+    const user = await this.getUserByEmail(email);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const passwordMatch = await this.comparePassword(password, user.password);
+
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    //Token generation
+    return this.authService.generateToken(user);
   }
 
   async getUserByEmail(email: string): Promise<User | null> {

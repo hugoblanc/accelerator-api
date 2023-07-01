@@ -1,4 +1,4 @@
-import { Controller, Post, Body, NotFoundException } from '@nestjs/common';
+import {Controller, Post, Body, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -16,5 +16,17 @@ export class UserController {
 
     const user = await this.userService.createUser(email, password);
     return user;
+  }
+
+  @Post('login')
+  async loginUser(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
+
+    try {
+      const token = await this.userService.loginUser(email, password);
+      return { token };
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 }
