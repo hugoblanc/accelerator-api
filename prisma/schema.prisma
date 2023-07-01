@@ -51,3 +51,11 @@ enum GPTModel {
   GPT35
   GPT4
 }
+
+model User {
+  id       String @id @default(uuid())
+  email    String
+  password String
+
+  @@map("user")
+}
