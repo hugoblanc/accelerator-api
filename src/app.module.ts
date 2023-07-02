@@ -1,5 +1,5 @@
 import { PromptAccessorModule } from './prompt/infrastructure/accessors/prompt-accessor.module';
-import { Module, ValidationPipe } from '@nestjs/common';
+import {MiddlewareConsumer, Module, NestModule, ValidationPipe} from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { AppService } from './app.service';
 import { ChatModule } from './chat/infrastructure/chat.module';
@@ -9,6 +9,8 @@ import { CategoryModule } from './prompt/category/category.module';
 import { PromptModule } from './prompt/infrastructure/prompt.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { JwtMiddleware } from './core/security/jwt.middleware';
+import { AuthModule } from './core/security/auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { UserModule } from './user/user.module';
     CategoryModule,
     PromptModule,
     UserModule,
+    AuthModule,
   ],
   providers: [
     GptService,
@@ -28,4 +31,8 @@ import { UserModule } from './user/user.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes('*');
+  }
+}
