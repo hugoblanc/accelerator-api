@@ -1,5 +1,12 @@
-import {Controller, Post, Body, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  NotFoundException,
+  UnauthorizedException, UseGuards, Get, Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
+import {JwtAuthGuard} from "../../core/security/guards/jwt-auth.guard";
 
 @Controller('users')
 export class UserController {
@@ -18,15 +25,10 @@ export class UserController {
     return user;
   }
 
-  @Post('login')
-  async loginUser(@Body() body: { email: string; password: string }) {
-    const { email, password } = body;
-
-    try {
-      const token = await this.userService.loginUser(email, password);
-      return { token };
-    } catch (error) {
-      throw new UnauthorizedException(error.message);
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get('current')
+  getCurrentUser(@Req() req) {
+    const userId = req.user.userId;
+    return this.userService.getUserById(userId);
   }
 }

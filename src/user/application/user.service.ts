@@ -42,12 +42,22 @@ export class UserService {
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findFirst({
+    return this.prisma.user.findFirst({
       where: {
-        email: {equals: email},
+        email: { equals: email },
       },
     });
-    return user;
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    if (id) {
+      return this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+    }
+    throw new UnauthorizedException('No user authenticated');
   }
 
   hashPassword = async (password) => {
