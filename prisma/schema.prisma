@@ -19,6 +19,9 @@ model Prompt {
   modelAnswer     String?
   promptVariables PromptVariable[]
   categories      Category[]
+  user            User?            @relation("UserPrompts", fields: [userId], references: [id])
+  userId          String?
+  opened            Boolean          @default(false)
 
   @@map("prompt")
 }
@@ -53,9 +56,10 @@ enum GPTModel {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   email    String
   password String
+  prompts  Prompt[] @relation("UserPrompts")
 
   @@map("user")
 }

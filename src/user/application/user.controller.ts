@@ -3,10 +3,12 @@ import {
   Post,
   Body,
   NotFoundException,
-  UnauthorizedException, UseGuards, Get, Req,
+  UseGuards,
+  Get,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import {JwtAuthGuard} from "../../core/security/guards/jwt-auth.guard";
+import { JwtAuthGuard } from '../../core/security/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {

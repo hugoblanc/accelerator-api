@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {IsArray, IsBoolean, IsEnum, IsNotEmpty, IsString} from 'class-validator';
 import { GPTModel } from '../../../core/openai/gpt/gtp-model.enum';
 
 export class CreatePromptDto {
@@ -16,6 +16,9 @@ export class CreatePromptDto {
 
   @IsString()
   readonly description?: string;
+
+  @IsBoolean()
+  readonly opened: boolean;
 
   @IsArray()
   @IsString({ each: true })
