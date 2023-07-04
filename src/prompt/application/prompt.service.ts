@@ -3,7 +3,7 @@ import { PrismaService } from '../../core/prisma/prisma.service';
 import { PromptTemplate } from '../domain/prompt-template';
 import { CreatePromptDto } from '../infrastructure/dto/create-prompt.dto';
 import { gptModelMap } from '../../core/openai/gpt/gtp-model.enum';
-import { Prompt } from '@prisma/client';
+import { Prisma, Prompt } from '@prisma/client';
 
 @Injectable()
 export class PromptService {
@@ -100,8 +100,6 @@ export class PromptService {
   }
 
   async fork(promptId: string, userId: string): Promise<Prompt> {
-    // TODO THIS FUCKING FORK FUNCTION
-    // Get the original prompt
     const originalPrompt = await this.prisma.prompt.findUnique({
       where: { id: promptId },
       include: {
@@ -113,19 +111,36 @@ export class PromptService {
       throw new NotFoundException('Original prompt not found');
     }
 
-    // Create a copy of the original prompt
-    const clonedPrompt: any = {
-      text: originalPrompt.text,
-      name: originalPrompt.name,
-      description: originalPrompt.description,
-      model: originalPrompt.model,
-      modelAnswer: originalPrompt.modelAnswer,
-      promptVariables: originalPrompt.promptVariables,
-      categories: originalPrompt.categories,
-      userId: userId, // Put the new user id
+    const forkedPrompt: Prisma.PromptCreateArgs = {
+      data: {
+        text: originalPrompt.text,
+        name: originalPrompt.name,
+        description: originalPrompt.description,
+        model: originalPrompt.model,
+        modelAnswer: originalPrompt.modelAnswer,
+        promptVariables: {
+          createMany: {
+            data: originalPrompt.promptVariables.map((variable) => ({
+              key: variable.key,
+              value: variable.value,
+              type: variable.type,
+            })),
+          },
+        },
+        categories: {
+          connect: originalPrompt.categories.map((category) => ({
+            id: category.id,
+          })),
+        },
+        userId: userId, // Put the new user id
+        opened: false,
+      },
     };
 
     // Save the fork
-    return this.prisma.prompt.create({ data: clonedPrompt });
+    const fork = await this.prisma.prompt.create(forkedPrompt);
+    console.log(fork);
+
+    return fork;
   }
 }
