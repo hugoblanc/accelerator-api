@@ -1,9 +1,17 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Req, UseGuards} from '@nestjs/common';
-import { CreatePromptDto } from './dto/create-prompt.dto';
-import { PromptService } from '../application/prompt.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
-import {JwtAuthGuard} from "../../core/security/guards/jwt-auth.guard";
-import {AuthGuard} from "@nestjs/passport";
+import { JwtAuthGuard } from '../../core/security/guards/jwt-auth.guard';
+import { PromptService } from '../application/prompt.service';
+import { CreatePromptDto } from './dto/create-prompt.dto';
 
 @Controller('prompts')
 export class PromptController {
