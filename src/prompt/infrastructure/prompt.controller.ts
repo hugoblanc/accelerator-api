@@ -40,8 +40,8 @@ export class PromptController {
 
   @Get('/myPrompts')
   @UseGuards(JwtAuthGuard)
-  getMyPrompts(@Req() request: Request) {
-    return this.promptService.getMyPrompts(request['user'].userId);
+  getMyPrompts(@Req() req) {
+    return this.promptService.getMyPrompts(req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
