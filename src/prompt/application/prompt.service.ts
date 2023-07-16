@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../core/prisma/prisma.service';
-import { PromptTemplate } from '../domain/prompt-template';
-import { CreatePromptDto } from '../infrastructure/dto/create-prompt.dto';
-import { gptModelMap } from '../../core/openai/gpt/gtp-model.enum';
-import { Prisma, Prompt } from '@prisma/client';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {PrismaService} from '../../core/prisma/prisma.service';
+import {PromptTemplate} from '../domain/prompt-template';
+import {CreatePromptDto} from '../infrastructure/dto/create-prompt.dto';
+import {gptModelMap} from '../../core/openai/gpt/gtp-model.enum';
+import {Prisma, Prompt} from '@prisma/client';
 
 @Injectable()
 export class PromptService {
@@ -36,6 +36,7 @@ export class PromptService {
         },
         userId: userId,
         opened: createPromptDto.opened,
+        lang: createPromptDto.lang,
       },
     });
   }
@@ -134,13 +135,11 @@ export class PromptService {
         },
         userId: userId, // Put the new user id
         opened: false,
+        lang: originalPrompt.lang
       },
     };
 
     // Save the fork
-    const fork = await this.prisma.prompt.create(forkedPrompt);
-    console.log(fork);
-
-    return fork;
+    return await this.prisma.prompt.create(forkedPrompt);
   }
 }

@@ -21,7 +21,8 @@ model Prompt {
   categories      Category[]
   user            User?            @relation("UserPrompts", fields: [userId], references: [id])
   userId          String?
-  opened            Boolean          @default(false)
+  opened          Boolean          @default(false)
+  lang            String           @default("en")
 
   @@map("prompt")
 }
