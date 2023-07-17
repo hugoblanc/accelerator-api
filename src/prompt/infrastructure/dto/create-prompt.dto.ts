@@ -27,4 +27,7 @@ export class CreatePromptDto {
   @IsArray()
   @IsString({ each: true })
   readonly categoryNamesToCreate?: string[];
+
+  @IsString()
+  readonly lang?: string;
 }
