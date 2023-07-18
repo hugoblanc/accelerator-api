@@ -8,3 +8,8 @@ export const gptModelMap = new Map<GPTModel, PrismaGPTModel>([
   [GPTModel.GPT35Turbo, PrismaGPTModel.GPT35],
   [GPTModel.GPT4, PrismaGPTModel.GPT4],
 ]);
+
+export const mapGptModel = new Map<PrismaGPTModel, GPTModel>([
+  [PrismaGPTModel.GPT35, GPTModel.GPT35Turbo],
+  [PrismaGPTModel.GPT4, GPTModel.GPT4],
+]);

@@ -1,4 +1,10 @@
-import {IsArray, IsBoolean, IsEnum, IsNotEmpty, IsString} from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 import { GPTModel } from '../../../core/openai/gpt/gtp-model.enum';
 
 export class CreatePromptDto {

@@ -1,9 +1,10 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from '../../core/prisma/prisma.service';
-import {PromptTemplate} from '../domain/prompt-template';
-import {CreatePromptDto} from '../infrastructure/dto/create-prompt.dto';
-import {gptModelMap} from '../../core/openai/gpt/gtp-model.enum';
-import {Prisma, Prompt} from '@prisma/client';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../core/prisma/prisma.service';
+import { PromptTemplate } from '../domain/prompt-template';
+import { CreatePromptDto } from '../infrastructure/dto/create-prompt.dto';
+import { gptModelMap, mapGptModel } from '../../core/openai/gpt/gtp-model.enum';
+import { Prisma, Prompt } from '@prisma/client';
+import { EditPromptDto } from '../infrastructure/dto/edit-prompt.dto';
 
 @Injectable()
 export class PromptService {
@@ -41,6 +42,71 @@ export class PromptService {
     });
   }
 
+  async editPrompt(editPromptDto: EditPromptDto, userId: string) {
+    const template = new PromptTemplate(editPromptDto.text);
+    const variables = template.variables;
+    const model = gptModelMap.get(editPromptDto.model);
+
+    await this.prisma.promptVariable.deleteMany({
+      where: {
+        promptId: editPromptDto.id,
+      },
+    });
+
+    const prompt = await this.prisma.prompt.findUnique({
+      where: {
+        id: editPromptDto.id,
+      },
+      include: {
+        categories: true,
+      },
+    });
+
+    await this.prisma.prompt.update({
+      where: {
+        id: editPromptDto.id,
+      },
+      data: {
+        categories: {
+          disconnect: [
+            ...prompt.categories.map((category) => ({ id: category.id })),
+          ],
+        },
+      },
+    });
+
+    return this.prisma.prompt.update({
+      where: {
+        id: editPromptDto.id,
+      },
+      data: {
+        id: editPromptDto.id,
+        name: editPromptDto.name,
+        text: editPromptDto.text,
+        description: editPromptDto.description,
+        model,
+        promptVariables: {
+          createMany: {
+            data: variables.map((variable) => ({
+              key: variable.key,
+              value: variable.key,
+              type: variable.type,
+            })),
+          },
+        },
+        categories: {
+          connect: editPromptDto.categoryIds.map((id) => ({ id })),
+          create: editPromptDto.categoryNamesToCreate?.map((name) => ({
+            name,
+          })),
+        },
+        userId: userId,
+        opened: editPromptDto.opened,
+        lang: editPromptDto.lang,
+      },
+    });
+  }
+
   getPromptByIds(promptIds: string[]) {
     return this.prisma.prompt.findMany({
       where: {
@@ -62,6 +128,18 @@ export class PromptService {
         promptVariables: true,
       },
     });
+  }
+
+  async getPromptToEdit(promptId: string) {
+    const prompt = await this.prisma.prompt.findUnique({
+      where: {
+        id: promptId,
+      },
+      include: {
+        categories: true,
+      },
+    });
+    return { ...prompt, model: mapGptModel.get(prompt.model) };
   }
 
   /**
@@ -135,7 +213,7 @@ export class PromptService {
         },
         userId: userId, // Put the new user id
         opened: false,
-        lang: originalPrompt.lang
+        lang: originalPrompt.lang,
       },
     };
 
