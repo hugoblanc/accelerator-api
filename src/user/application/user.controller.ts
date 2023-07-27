@@ -1,22 +1,29 @@
 import {
-  Controller,
-  Post,
   Body,
-  NotFoundException,
-  UseGuards,
+  Controller,
   Get,
+  NotFoundException,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { JwtAuthGuard } from '../../core/security/guards/jwt-auth.guard';
-import {first} from "rxjs";
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Post('register')
-  async registerUser(@Body() body: { email: string; password: string, lastname: string, firstname: string }) {
+  async registerUser(
+    @Body()
+    body: {
+      email: string;
+      password: string;
+      lastname: string;
+      firstname: string;
+    },
+  ) {
     const { email, password, firstname, lastname } = body;
     const existingUser = await this.userService.getUserByEmail(email);
 
@@ -24,7 +31,12 @@ export class UserController {
       throw new NotFoundException('Username already exists');
     }
 
-    const user = await this.userService.createUser(email, password, firstname, lastname);
+    const user = await this.userService.createUser(
+      email,
+      password,
+      firstname,
+      lastname,
+    );
     return user;
   }
 

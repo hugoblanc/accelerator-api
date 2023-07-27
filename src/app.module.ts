@@ -1,21 +1,27 @@
-import { PromptAccessorModule } from './prompt/infrastructure/accessors/prompt-accessor.module';
-import {MiddlewareConsumer, Module, NestModule, ValidationPipe} from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  ValidationPipe,
+} from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { AppService } from './app.service';
 import { ChatModule } from './chat/infrastructure/chat.module';
 import { CoreModule } from './core/core.module';
 import { GptService } from './core/openai/gpt.service';
+import { AuthModule } from './core/security/auth/auth.module';
+import { JwtMiddleware } from './core/security/jwt.middleware';
 import { CategoryModule } from './prompt/category/category.module';
 import { PromptModule } from './prompt/infrastructure/prompt.module';
-import { ConfigModule } from '@nestjs/config';
+import { SubscriptionModule } from './subscription/subscription.module';
 import { UserModule } from './user/user.module';
-import { JwtMiddleware } from './core/security/jwt.middleware';
-import { AuthModule } from './core/security/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     CoreModule,
+    SubscriptionModule,
     ChatModule,
     CategoryModule,
     PromptModule,

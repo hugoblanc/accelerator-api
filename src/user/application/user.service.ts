@@ -13,13 +13,21 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
-  async createUser(email: string, password: string, firstname: string, lastname: string): Promise<User> {
+  async createUser(
+    email: string,
+    password: string,
+    firstname: string,
+    lastname: string,
+  ): Promise<User> {
     const user = await this.prisma.user.create({
       data: {
         email,
         firstname,
         lastname,
         password: await this.hashPassword(password),
+        subscription: {
+          create: {},
+        },
       },
     });
 
