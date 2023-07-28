@@ -1,3 +1,6 @@
+import { TeamModule } from './team/team.module';
+import { ContextModule } from './core/context/context.module';
+import { WorkspaceModule } from './workspace/workspace.module';
 import {
   MiddlewareConsumer,
   Module,
@@ -19,6 +22,9 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    TeamModule,
+    ContextModule,
+    WorkspaceModule,
     ConfigModule.forRoot(),
     CoreModule,
     SubscriptionModule,

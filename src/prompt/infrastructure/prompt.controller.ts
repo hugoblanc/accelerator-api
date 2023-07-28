@@ -59,6 +59,12 @@ export class PromptController {
     return this.promptService.getMyPrompts(userId);
   }
 
+  @Get('/team/:teamId')
+  @UseGuards(JwtAuthGuard)
+  getTeamPrompts(@Param('teamId') teamId: string) {
+    return this.promptService.getTeamPrompts(teamId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   deletePrompt(@Param('id') promptId: string, @UserId() userId: string) {
