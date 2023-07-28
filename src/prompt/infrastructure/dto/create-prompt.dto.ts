@@ -23,6 +23,9 @@ export class CreatePromptDto {
   @IsString()
   readonly description?: string;
 
+  @IsString()
+  readonly teamId?: string;
+
   @IsBoolean()
   readonly opened: boolean;
 

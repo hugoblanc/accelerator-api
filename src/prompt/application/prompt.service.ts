@@ -9,6 +9,7 @@ import { EditPromptDto } from '../infrastructure/dto/edit-prompt.dto';
 @Injectable()
 export class PromptService {
   constructor(private readonly prisma: PrismaService) {}
+
   async createPrompt(createPromptDto: CreatePromptDto, userId: string) {
     const template = new PromptTemplate(createPromptDto.text);
     const variables = template.variables;
@@ -84,6 +85,7 @@ export class PromptService {
         name: editPromptDto.name,
         text: editPromptDto.text,
         description: editPromptDto.description,
+        teamId: editPromptDto.teamId,
         model,
         promptVariables: {
           createMany: {
@@ -103,18 +105,6 @@ export class PromptService {
         userId: userId,
         opened: editPromptDto.opened,
         lang: editPromptDto.lang,
-      },
-    });
-  }
-
-  getPromptByIds(promptIds: string[]) {
-    return this.prisma.prompt.findMany({
-      where: {
-        id: { in: promptIds },
-      },
-      include: {
-        promptVariables: true,
-        categories: true,
       },
     });
   }
@@ -142,9 +132,30 @@ export class PromptService {
     return { ...prompt, model: mapGptModel.get(prompt.model) };
   }
 
-  /**
-   * Get all prompts that are opened
-   */
+  getTeamPrompts(teamId: string) {
+    return this.prisma.prompt.findMany({
+      where: {
+        teamId: teamId,
+      },
+      include: {
+        promptVariables: true,
+        categories: true,
+      },
+    });
+  }
+
+  getPromptByIds(promptIds: string[]) {
+    return this.prisma.prompt.findMany({
+      where: {
+        id: { in: promptIds },
+      },
+      include: {
+        promptVariables: true,
+        categories: true,
+      },
+    });
+  }
+
   getAllPrompts() {
     return this.prisma.prompt.findMany({
       where: {
