@@ -33,6 +33,26 @@ export class TeamService {
     return teams;
   }
 
+  async getTeam(teamId: string): Promise<Team> {
+    const team = await this.prismaService.team.findUnique({
+      where: {
+        id: teamId,
+      },
+    });
+
+    return team;
+  }
+
+  async getWorkspaceTeams(): Promise<Team[]> {
+    const teams = await this.prismaService.team.findMany({
+      where: {
+        workspaceId: this.workspaceId,
+      },
+    });
+
+    return teams;
+  }
+
   getTeamMembers(teamId: string): Promise<any[]> {
     return this.prismaService.teamMember.findMany({
       where: {
