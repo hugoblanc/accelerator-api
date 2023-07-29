@@ -10,6 +10,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 })
 export class ContextModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply().forRoutes('*');
+    consumer.apply(ContextHttpRequestMiddleware).forRoutes('*');
   }
 }

@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { GPTModel } from '../../../core/openai/gpt/gtp-model.enum';
@@ -24,6 +25,7 @@ export class CreatePromptDto {
   readonly description?: string;
 
   @IsString()
+  @IsOptional()
   readonly teamId?: string;
 
   @IsBoolean()
@@ -38,5 +40,6 @@ export class CreatePromptDto {
   readonly categoryNamesToCreate?: string[];
 
   @IsString()
+  @IsOptional()
   readonly lang?: string;
 }
