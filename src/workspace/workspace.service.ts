@@ -6,6 +6,9 @@ import { ContextService } from '../core/context/context.service';
 
 @Injectable()
 export class WorkspaceService {
+  get workspaceId(): string {
+    return this.context.workspaceId;
+  }
   constructor(
     private readonly prismaService: PrismaService,
     private readonly context: ContextService,
@@ -46,6 +49,26 @@ export class WorkspaceService {
         userId: invitedId,
         workspaceId: this.context.workspaceId,
         role: WorkspaceRole.user,
+      },
+    });
+  }
+
+  async getWorkspaceMembers(): Promise<any[]> {
+    return this.prismaService.workspaceMember.findMany({
+      where: {
+        workspaceId: this.context.workspaceId,
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            email: true,
+          },
+        },
+        role: true,
+        id: true,
       },
     });
   }

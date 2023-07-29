@@ -23,6 +23,18 @@ export class TeamController {
     return this.teamService.getMyTeams();
   }
 
+  @Get(':teamId')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  getTeam(@Param('teamId', ParseUUIDPipe) teamId: string): Promise<Team> {
+    return this.teamService.getTeam(teamId);
+  }
+
+  @Get('workspace/:workspaceId')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  getWorkspaceTeams(): Promise<Team[]> {
+    return this.teamService.getWorkspaceTeams();
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard)
   createTeam(@Body() createTeamDto: CreateTeamDto): Promise<Team> {

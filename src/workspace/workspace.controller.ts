@@ -8,14 +8,16 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Workspace } from '@prisma/client';
-import { JwtAuthGuard } from '../core/security/guards/jwt-auth.guard';
-import { CreateWorkspaceDto } from './dto/create-workspace.dto';
-import { WorkspaceService } from './workspace.service';
+import {Workspace} from '@prisma/client';
+import {JwtAuthGuard} from '../core/security/guards/jwt-auth.guard';
+import {CreateWorkspaceDto} from './dto/create-workspace.dto';
+import {WorkspaceService} from './workspace.service';
+import {IsInWorkspace} from "./guard/is-user-in-workspace.guard";
 
 @Controller('workspaces')
 export class WorkspaceController {
-  constructor(private readonly workspaceService: WorkspaceService) {}
+  constructor(private readonly workspaceService: WorkspaceService) {
+  }
 
   @Get('mine')
   @UseGuards(JwtAuthGuard)
@@ -37,5 +39,11 @@ export class WorkspaceController {
     @Param('newUserId', ParseUUIDPipe) invitedId: string,
   ): Promise<void> {
     return this.workspaceService.inviteMember(invitedId);
+  }
+
+  @Get('members')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  getWorkspaceMembers(): Promise<any[]> {
+    return this.workspaceService.getWorkspaceMembers();
   }
 }
