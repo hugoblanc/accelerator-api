@@ -131,14 +131,25 @@ export class TeamService {
     });
   }
 
-  // async removeMemberFromTeam(teamId: string): Promise<void> {
-  //   await this.prismaService.teamMember.deleteMany({
-  //     where: {
-  //       teamId,
-  //       userId: this.userId,
-  //     },
-  //   });
-  // }
+  async removeMember(memberId: string): Promise<void> {
+    await this.prismaService.teamMember.delete({
+      where: {
+        id: memberId,
+      },
+    });
+  }
+
+  async removeMemberFromAllTeams(userId: string): Promise<void> {
+    const teamIds = await this.getWorkspaceTeams();
+    for (const team of teamIds) {
+      await this.prismaService.teamMember.deleteMany({
+        where: {
+          teamId: team.id,
+          userId: userId,
+        },
+      });
+    }
+  }
 
   // async getTeamMembers(teamId: string): Promise<User[]> {
   //   const members = await this.prismaService.teamMember.findMany({

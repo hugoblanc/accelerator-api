@@ -12,6 +12,7 @@ export class WorkspaceService {
   get workspaceId(): string {
     return this.context.workspaceId;
   }
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly userService: UserService,
@@ -63,14 +64,24 @@ export class WorkspaceService {
     if (!user) {
       throw new Error('User not found');
     }
-    // Add the user to the workspace
-    await this.prismaService.workspaceMember.create({
-      data: {
+    const member = await this.prismaService.workspaceMember.findFirst({
+      where: {
         userId: user.id,
         workspaceId: this.context.workspaceId,
-        role: WorkspaceRole.user,
       },
     });
+
+    // if the user already exists in the workspace, we do nothing
+    if (!member) {
+      // Add the user to the workspace
+      await this.prismaService.workspaceMember.create({
+        data: {
+          userId: user.id,
+          workspaceId: this.context.workspaceId,
+          role: WorkspaceRole.user,
+        },
+      });
+    }
 
     if (inviteMemberDto.teamId) {
       // Add the user to the team
@@ -83,11 +94,21 @@ export class WorkspaceService {
   }
 
   async removeMember(memberId: string): Promise<void> {
-    await this.prismaService.workspaceMember.delete({
+    const member = await this.prismaService.workspaceMember.findFirst({
       where: {
         id: memberId,
       },
     });
+
+    if (member) {
+      await this.prismaService.workspaceMember.delete({
+        where: {
+          id: memberId,
+        },
+      });
+      // Remove the user from all teams
+      await this.teamService.removeMemberFromAllTeams(member.userId);
+    }
   }
 
   async getWorkspaceMembers(): Promise<any[]> {
