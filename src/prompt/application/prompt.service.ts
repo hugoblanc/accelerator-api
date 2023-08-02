@@ -39,6 +39,7 @@ export class PromptService {
         userId: userId,
         opened: createPromptDto.opened,
         lang: createPromptDto.lang,
+        teamId: createPromptDto.teamId,
       },
     });
   }
@@ -172,6 +173,7 @@ export class PromptService {
     return this.prisma.prompt.findMany({
       where: {
         userId: userId,
+        teamId: null,
       },
       include: {
         promptVariables: true,

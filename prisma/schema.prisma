@@ -22,7 +22,7 @@ model Prompt {
   user            User?            @relation("UserPrompts", fields: [userId], references: [id])
   userId          String?          @map("user_id") @db.Uuid
   teamId          String?          @map("team_id") @db.Uuid
-  Team            Team?            @relation(fields: [teamId], references: [id])
+  Team            Team?            @relation(fields: [teamId], references: [id], onDelete: Cascade)
   opened          Boolean          @default(false)
   lang            String           @default("en")
 
@@ -99,7 +99,7 @@ model TeamMember {
   id     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   user   User     @relation(fields: [userId], references: [id])
   userId String   @map("user_id") @db.Uuid
-  team   Team     @relation(fields: [teamId], references: [id])
+  team   Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamId String   @map("team_id") @db.Uuid
   role   TeamRole @default(user)
 
