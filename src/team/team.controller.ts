@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -47,5 +47,11 @@ export class TeamController {
     @Param('teamId', ParseUUIDPipe) teamId: string,
   ): Promise<any[]> {
     return this.teamService.getTeamMembers(teamId);
+  }
+
+  @Delete(':teamId')
+  @UseGuards(JwtAuthGuard)
+  delete(@Param('teamId', ParseUUIDPipe) teamId: string) {
+    return this.teamService.delete(teamId);
   }
 }

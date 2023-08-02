@@ -123,6 +123,14 @@ export class TeamService {
     return teamMember;
   }
 
+  async delete(teamId: string) {
+    await this.prismaService.team.delete({
+      where: {
+        id: teamId,
+      },
+    });
+  }
+
   // async removeMemberFromTeam(teamId: string): Promise<void> {
   //   await this.prismaService.teamMember.deleteMany({
   //     where: {
