@@ -1,10 +1,12 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { Team } from '@prisma/client';
@@ -53,5 +55,11 @@ export class TeamController {
   @UseGuards(JwtAuthGuard)
   delete(@Param('teamId', ParseUUIDPipe) teamId: string) {
     return this.teamService.delete(teamId);
+  }
+
+  @Delete('member/:memberId')
+  @UseGuards(JwtAuthGuard)
+  removeMember(@Param('memberId', ParseUUIDPipe) memberId: string) {
+    return this.teamService.removeMember(memberId);
   }
 }
