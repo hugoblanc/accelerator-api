@@ -130,4 +130,9 @@ export class WorkspaceService {
       },
     });
   }
+
+  async getWorkspaceMemberCount(): Promise<number> {
+    const members = await this.getWorkspaceMembers();
+    return members.length;
+  }
 }
