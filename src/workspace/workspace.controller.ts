@@ -52,6 +52,12 @@ export class WorkspaceController {
     return this.workspaceService.getWorkspaceMembers();
   }
 
+  @Get('members/count')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  getWorkspaceMemberCount(): Promise<number> {
+    return this.workspaceService.getWorkspaceMemberCount();
+  }
+
   @Delete('members/:memberId')
   @UseGuards(JwtAuthGuard, IsInWorkspace)
   removeMember(
