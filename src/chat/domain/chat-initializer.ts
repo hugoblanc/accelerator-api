@@ -70,6 +70,22 @@ export class ChatInitializer {
     return this.generateChunkedPrompt(result, this.longTextVariables[0]);
   }
 
+  renderTemplate(): string {
+    let template = this.template;
+    for (const variable of this.textVariables) {
+      template = template.replace(
+        `${variable.type}(${variable.key})`,
+        `{${variable.key}}`,
+      );
+    }
+
+    if (this.longTextVariables.length > 0) {
+      throw new BadRequestException('Not compatible with long text');
+    }
+
+    return template;
+  }
+
   private generateChunkedPrompt(
     template: string,
     longTextVariable: InjectableVariable,

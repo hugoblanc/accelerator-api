@@ -10,9 +10,6 @@ export class IsInWorkspace implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    console.log(req.header);
-    console.log(req.headers);
-
     this.prisma.workspace.findUnique({
       where: {
         id: req.header.workspaceId,

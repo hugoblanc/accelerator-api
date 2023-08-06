@@ -1,6 +1,12 @@
 import { VariableType } from '@prisma/client';
-import { Type } from 'class-transformer';
-import { IsArray, IsDefined, IsEnum, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsDefined,
+  IsEnum,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 export class UsePromptDto {
   @IsArray()
@@ -9,10 +15,6 @@ export class UsePromptDto {
 }
 
 class Variable {
-  @IsString()
-  @IsDefined()
-  name: string;
-
   @IsString()
   @IsDefined()
   key: string;
@@ -24,4 +26,14 @@ class Variable {
   @IsDefined()
   @IsEnum(VariableType)
   type: VariableType;
+}
+
+export class UsePromptDtoV2 {
+  @Transform(({ value }) =>
+    JSON.parse(value).map((v: any) => Object.assign(new Variable(), v)),
+  )
+  @IsArray()
+  @Type(() => Variable)
+  @ValidateNested()
+  variables: Variable[];
 }

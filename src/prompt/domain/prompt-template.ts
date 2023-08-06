@@ -47,6 +47,7 @@ interface VariableProps {
 export const variableDictionary = new Map<VariableType, RegExp>([
   [VariableType.text, /\btext\(([^)]*)\)/gi],
   [VariableType.longText, /\blongText\(([^)]*)\)/gi],
+  [VariableType.pdf, /\bpdf\(([^)]*)\)/gi],
 ]);
 
 export class Variable {
