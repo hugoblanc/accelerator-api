@@ -13,8 +13,6 @@ export class CsvStrategy implements IDocumentLoader {
   async load(): Promise<Document<Record<string, any>>[]> {
     const docs = await this.loader.load();
 
-    console.log('count docs', docs.length);
-
     const splitter = new CharacterTextSplitter({
       separator: '-------------------',
       chunkSize: 1000,
@@ -24,10 +22,8 @@ export class CsvStrategy implements IDocumentLoader {
       docs.map((d) => d.pageContent),
       '-------------------',
     );
-    console.log('count split', output.length);
 
     const newDocs = await splitter.createDocuments(output);
-    console.log('count new docs', newDocs.length);
 
     return newDocs;
   }

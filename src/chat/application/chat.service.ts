@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { VariableType } from '@prisma/client';
 import { LLMChain, OpenAI, PromptTemplate } from 'langchain';
 import { loadQAMapReduceChain, loadQAStuffChain } from 'langchain/chains';
@@ -56,6 +56,18 @@ export class ChatService {
       const docs = await this.valorizer.load(variable, files);
       documents = docs;
     }
+    console.log('Doc Length' + documents.length);
+    const contentSize = documents.reduce((acc, doc) => {
+      acc += doc.pageContent.length;
+      return acc;
+    }, 0);
+    console.log('Content size' + contentSize);
+    if (contentSize > 30000) {
+      throw new BadRequestException(
+        'Le document dépasse la limite gratuite des 30 000 caractères',
+      );
+    }
+
     const initializer = new ChatInitializer(
       promptTemplate.text,
       usePrompDto.variables,
@@ -65,7 +77,6 @@ export class ChatService {
 
     const llm = new OpenAI({
       temperature: 0.9,
-      streaming: true,
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
     const prompt = PromptTemplate.fromTemplate(template);
@@ -78,11 +89,11 @@ export class ChatService {
       }, {} as Record<string, string>);
 
     if (documents.length > 0) {
-      const splitter = new CharacterTextSplitter({ chunkSize: 2000 });
+      const splitter = new CharacterTextSplitter({ chunkSize: 8000 });
       const split = documents.map((d) => d.pageContent);
       const splits = await splitter.mergeSplits(split, '\n');
       documents = await splitter.createDocuments(splits);
-      const chain = loadQAMapReduceChain(llm, { verbose: true });
+      const chain = loadQAMapReduceChain(llm);
 
       const promptValues = prompt.formatPromptValue(values);
 
