@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { VariableType } from '@prisma/client';
 
 export class PromptTemplate {
@@ -24,6 +25,15 @@ export class PromptTemplate {
       }
     }
 
+    const fileVariableCount = results.filter(
+      (variable) => variable.type === VariableType.pdf,
+    ).length;
+    if (fileVariableCount > 1) {
+      throw new BadRequestException(
+        'Seulement un fichier est autorisé par prompt',
+      );
+    }
+
     return results;
   }
 
@@ -47,6 +57,7 @@ interface VariableProps {
 export const variableDictionary = new Map<VariableType, RegExp>([
   [VariableType.text, /\btext\(([^)]*)\)/gi],
   [VariableType.longText, /\blongText\(([^)]*)\)/gi],
+  [VariableType.pdf, /\bpdf\(([^)]*)\)/gi],
 ]);
 
 export class Variable {

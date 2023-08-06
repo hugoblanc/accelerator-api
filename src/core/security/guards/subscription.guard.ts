@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { SubscriptionType } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -17,7 +22,7 @@ export class SubscriptionGuard implements CanActivate {
     }
 
     if (this.isTrialSubscriptionExhausted(user.subscription)) {
-      return false;
+      throw new ForbiddenException('No more credit');
     }
 
     await this.decrementSubscriptionCredit(userId);

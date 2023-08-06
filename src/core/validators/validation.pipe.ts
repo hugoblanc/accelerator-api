@@ -15,11 +15,12 @@ export class ValidationPipe implements PipeTransform<any> {
       return value;
     }
     const object = plainToInstance(metatype, value);
+
     const errors = await validate(object);
     if (errors.length > 0) {
       throw new BadRequestException('Validation failed');
     }
-    return value;
+    return object;
   }
 
   private toValidate(metatype: Function): boolean {
