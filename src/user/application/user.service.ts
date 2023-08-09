@@ -48,7 +48,7 @@ export class UserService {
     }
 
     //Token generation
-    return this.authService.generateToken(user);
+    return this.authService.generateJwt({sub: user.id, email: user.email});
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
