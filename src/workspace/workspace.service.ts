@@ -135,4 +135,11 @@ export class WorkspaceService {
     const members = await this.getWorkspaceMembers();
     return members.length;
   }
+
+  async updateWorkspace(workspaceId: string, updateWorkspaceDto: UpdateWorkspaceDto): Promise<Workspace> {
+    return this.prismaService.workspace.update({
+      where: { id: workspaceId },
+      data: { name: updateWorkspaceDto.name },
+    });
+  }
 }
