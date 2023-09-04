@@ -75,11 +75,17 @@ model User {
   @@map("user")
 }
 
+enum WorkspaceVisibility {
+  public
+  private
+}
+
 model Workspace {
-  id      String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name    String
-  members WorkspaceMember[]
-  Team    Team[]
+  id         String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name       String
+  visibility WorkspaceVisibility @default(private)
+  members    WorkspaceMember[]
+  Team       Team[]
 
   @@map("workspace")
 }

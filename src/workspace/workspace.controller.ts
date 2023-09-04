@@ -65,4 +65,13 @@ export class WorkspaceController {
   ): Promise<void> {
     return this.workspaceService.removeMember(memberId);
   }
+
+  @Put('toggle-visibility/:workspaceId')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  toggleVisibility(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
+    @Body() toggleVisibilityDto: ToggleVisibilityDto,
+  ): Promise<void> {
+    return this.workspaceService.toggleVisibility(workspaceId, toggleVisibilityDto);
+  }
 }

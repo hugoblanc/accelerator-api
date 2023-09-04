@@ -38,6 +38,7 @@ export class WorkspaceService {
     const workspace = await this.prismaService.workspace.create({
       data: {
         name: createWorkspaceDto.name,
+        visibility: createWorkspaceDto.visibility,
         members: {
           create: {
             userId: this.context.userId,
@@ -134,5 +135,12 @@ export class WorkspaceService {
   async getWorkspaceMemberCount(): Promise<number> {
     const members = await this.getWorkspaceMembers();
     return members.length;
+  }
+
+  async toggleVisibility(workspaceId: string, visibility: WorkspaceVisibility): Promise<void> {
+    await this.prismaService.workspace.update({
+      where: { id: workspaceId },
+      data: { visibility },
+    });
   }
 }
