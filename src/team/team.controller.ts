@@ -13,6 +13,10 @@ import { Team } from '@prisma/client';
 import { JwtAuthGuard } from '../core/security/guards/jwt-auth.guard';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto'; // Added import statement
+
+export class UpdateTeamDto {
+  name: string;
+}
 import { TeamService } from './team.service';
 import { IsInWorkspace } from '../workspace/guard/is-user-in-workspace.guard';
 
