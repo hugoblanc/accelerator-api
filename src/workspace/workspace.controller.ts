@@ -65,4 +65,13 @@ export class WorkspaceController {
   ): Promise<void> {
     return this.workspaceService.removeMember(memberId);
   }
+
+  @Put(':workspaceId')
+  @UseGuards(JwtAuthGuard)
+  updateWorkspace(
+    @Param('workspaceId', ParseUUIDPipe) workspaceId: string,
+    @Body() updateWorkspaceDto: UpdateWorkspaceDto,
+  ): Promise<Workspace> {
+    return this.workspaceService.updateWorkspace(workspaceId, updateWorkspaceDto);
+  }
 }
