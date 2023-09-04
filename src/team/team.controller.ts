@@ -62,4 +62,13 @@ export class TeamController {
   removeMember(@Param('memberId', ParseUUIDPipe) memberId: string) {
     return this.teamService.removeMember(memberId);
   }
+
+  @Put(':teamId')
+  @UseGuards(JwtAuthGuard, IsInWorkspace)
+  updateTeam(
+    @Param('teamId', ParseUUIDPipe) teamId: string,
+    @Body() updateTeamDto: UpdateTeamDto,
+  ): Promise<Team> {
+    return this.teamService.updateTeam(teamId, updateTeamDto);
+  }
 }
