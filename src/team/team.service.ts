@@ -138,6 +138,13 @@ export class TeamService {
       },
     });
   }
+  
+  async updateTeam(teamId: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
+    return this.prismaService.team.update({
+      where: { id: teamId },
+      data: { name: updateTeamDto.name },
+    });
+  }
 
   async removeMemberFromAllTeams(userId: string): Promise<void> {
     const teamIds = await this.getWorkspaceTeams();
