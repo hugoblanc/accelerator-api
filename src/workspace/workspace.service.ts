@@ -135,4 +135,8 @@ export class WorkspaceService {
     const members = await this.getWorkspaceMembers();
     return members.length;
   }
+
+  async getAllWorkspaces(): Promise<Workspace[]> {
+    return this.prismaService.workspace.findMany();
+  }
 }
