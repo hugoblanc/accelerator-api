@@ -65,4 +65,10 @@ export class WorkspaceController {
   ): Promise<void> {
     return this.workspaceService.removeMember(memberId);
   }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getAllWorkspaces(): Promise<Workspace[]> {
+    return this.workspaceService.getAllWorkspaces();
+  }
 }
